@@ -7,7 +7,7 @@ import joblib
 # Streamlit setup
 # ======================
 st.set_page_config(page_title="AI Machine Failure Dashboard", layout="wide")
-st.title("📊 AI Machine Failure Dashboard")
+st.title("AI Machine Failure Dashboard")
 
 # ======================
 # Load Data & Model
