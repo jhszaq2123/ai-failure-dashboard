@@ -3,27 +3,28 @@ import pandas as pd
 import plotly.express as px
 import joblib
 
-# ======================
+
 # Streamlit setup
-# ======================
+
 st.set_page_config(page_title="AI Machine Failure Dashboard", layout="wide")
 st.title("AI Machine Failure Dashboard")
 
-# ======================
+
 # Load Data & Model
-# ======================
+
 df = pd.read_csv("data/sensor_data.csv")
 model = joblib.load("models/model.pkl")
 
 sensors = ["temperature","vibration","pressure","humidity","load","rpm","voltage"]
 
 # Dodanie predykcji AI
+
 df["pred_prob"] = model.predict_proba(df[sensors])[:,1]
 df["pred_class"] = model.predict(df[sensors])
 
-# ======================
+
 # Sidebar – manual input
-# ======================
+
 st.sidebar.header("Manual Sensor Input")
 sensor_values = {}
 for s in sensors:
@@ -44,18 +45,17 @@ else:
 
 st.sidebar.progress(int(prob_sidebar*100))
 
-# ======================
+
 # KPI – aktualne wartości sensorów
-# ======================
+
 st.subheader("Current Sensor Values")
 cols = st.columns(4)
 for i, s in enumerate(sensors):
     cols[i % 4].metric(s.capitalize(), sensor_values[s])
 cols[3].metric("Predicted Failure Probability", f"{prob_sidebar:.2f}")
 
-# ======================
 # Wykresy dla każdego sensora
-# ======================
+
 st.subheader("Sensor Data Visualization")
 
 for s in sensors:
