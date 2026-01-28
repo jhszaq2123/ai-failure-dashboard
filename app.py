@@ -4,13 +4,13 @@ import plotly.express as px
 import joblib
 
 # ======================
-# 1️⃣ Streamlit setup
+# Streamlit setup
 # ======================
 st.set_page_config(page_title="AI Machine Failure Dashboard", layout="wide")
 st.title("📊 AI Machine Failure Dashboard")
 
 # ======================
-# 2️⃣ Load Data & Model
+# Load Data & Model
 # ======================
 df = pd.read_csv("data/sensor_data.csv")
 model = joblib.load("models/model.pkl")
@@ -22,7 +22,7 @@ df["pred_prob"] = model.predict_proba(df[sensors])[:,1]
 df["pred_class"] = model.predict(df[sensors])
 
 # ======================
-# 3️⃣ Sidebar – manual input
+# Sidebar – manual input
 # ======================
 st.sidebar.header("Manual Sensor Input")
 sensor_values = {}
@@ -36,27 +36,27 @@ input_df = pd.DataFrame([list(sensor_values.values())], columns=sensors)
 pred_sidebar = model.predict(input_df)[0]
 prob_sidebar = model.predict_proba(input_df)[0][1]
 
-st.sidebar.subheader("🤖 Sidebar Prediction")
+st.sidebar.subheader("Sidebar Prediction")
 if pred_sidebar == 1:
-    st.sidebar.error(f"⚠️ Failure predicted! Probability: {prob_sidebar:.2f}")
+    st.sidebar.error(f"Failure predicted! Probability: {prob_sidebar:.2f}")
 else:
-    st.sidebar.success(f"✅ No failure predicted. Probability: {prob_sidebar:.2f}")
+    st.sidebar.success(f" No failure predicted. Probability: {prob_sidebar:.2f}")
 
 st.sidebar.progress(int(prob_sidebar*100))
 
 # ======================
-# 4️⃣ KPI – aktualne wartości sensorów
+# KPI – aktualne wartości sensorów
 # ======================
-st.subheader("📌 Current Sensor Values")
+st.subheader("Current Sensor Values")
 cols = st.columns(4)
 for i, s in enumerate(sensors):
     cols[i % 4].metric(s.capitalize(), sensor_values[s])
 cols[3].metric("Predicted Failure Probability", f"{prob_sidebar:.2f}")
 
 # ======================
-# 5️⃣ Wykresy dla każdego sensora
+# Wykresy dla każdego sensora
 # ======================
-st.subheader("📈 Sensor Data Visualization")
+st.subheader("Sensor Data Visualization")
 
 for s in sensors:
     fig = px.histogram(df, x=s, nbins=30, color="pred_class",
